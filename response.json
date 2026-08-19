@@ -1,0 +1,59 @@
+#! Deprecated field [include] used, expected [includes] instead
+{
+  "took": 63,
+  "timed_out": false,
+  "num_reduce_phases": 3,
+  "_shards": {
+    "total": 1011,
+    "successful": 1011,
+    "skipped": 975,
+    "failed": 0
+  },
+  "_clusters": {
+    "total": 2,
+    "successful": 2,
+    "skipped": 0,
+    "running": 0,
+    "partial": 0,
+    "failed": 0,
+    "details": {
+      "qa": {
+        "status": "successful",
+        "indices": "metricbeat-*",
+        "took": 23,
+        "timed_out": false,
+        "_shards": {
+          "total": 126,
+          "successful": 126,
+          "skipped": 116,
+          "failed": 0
+        }
+      },
+      "prod": {
+        "status": "successful",
+        "indices": "metricbeat-*",
+        "took": 57,
+        "timed_out": false,
+        "_shards": {
+          "total": 885,
+          "successful": 885,
+          "skipped": 859,
+          "failed": 0
+        }
+      }
+    }
+  },
+  "hits": {
+    "total": {
+      "value": 12,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "hosts": {
+      "buckets": []
+    }
+  }
+}
