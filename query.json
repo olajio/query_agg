@@ -1,0 +1,111 @@
+GET prod:metricbeat-*,qa:metricbeat-*/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "terms": {
+            "_tier": [
+              "data_hot",
+              "data_content"
+            ]
+          }
+        },
+        {
+          "terms": {
+            "host.hostname": [
+              "TS01-40HZLAPP22",
+              "CS01-40HTHUB01",
+              "CS01-40HTHUB02",
+              "CS01-10HZLAPP21",
+              "CS01-10HBKHZA21",
+              "CS01-40HZLAPP21",
+              "CS01-10HBKHZA22",
+              "CS01-40HZLAPP22",
+              "CS01-40HBKHZA22",
+              "CS01-40HBKHZA21",
+              "CS01-10HZLAPP22",
+              "CS01-11HTHUB01",
+              "CS01-11HTHUB02"
+            ]
+          }
+        },
+        {
+          "range": {
+            "@timestamp": {
+              "gt": "now-15m"
+            }
+          }
+        },
+        {
+          "terms": {
+            "windows.service.name": [
+              "HTFS.Job.Service",
+              "HTFS.Job.service",
+              "Hazeltree.AppTask",
+              "HazeltreeEtlConsole",
+              "SyncManagerControl",
+              "SyncManager.RuntimeService",
+              "Hazeltree.MessageBus.Atlas.ServiceHost"
+            ]
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "windows.service.state": "Running"
+          }
+        },
+        {
+          "term": {
+            "windows.service.start_type": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "hosts": {
+      "composite": {
+        "sources": [
+          {
+            "host_name": {
+              "terms": {
+                "field": "host.hostname"
+              }
+            }
+          },
+          {
+            "service_name": {
+              "terms": {
+                "field": "service.name"
+              }
+            }
+          }
+        ],
+        "size": 5000
+      },
+      "aggs": {
+        "client": {
+          "top_hits": {
+            "size": 1,
+            "_source": {
+              "include": [
+                "labels.client_code",
+                "windows.service.name",
+                "windows.service.state"
+              ]
+            }
+          }
+        },
+        "min_time": {
+          "min": {
+            "field": "@timestamp"
+          }
+        }
+      }
+    }
+  }
+}
